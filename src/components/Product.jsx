@@ -3,7 +3,7 @@ import {CartContext} from "./CreateContext.jsx";
 import {useContext} from "react";
 import {useState} from "react";
 import products from "./Products.jsx";
-const Product = ({price,id,title,image,category}) => {
+const Product = ({price,id,title,image,category,showAdd= true}) => {
     const {cart,setCart} = useContext(CartContext);
 
     const addToCart =() => {
@@ -27,7 +27,10 @@ const Product = ({price,id,title,image,category}) => {
             <i>{category}</i>
             price:{price}
 
-            <button onClick={addToCart}>ToCart</button>
+            {showAdd && (
+                <button onClick={addToCart}>ToCart</button>
+            )}
+
 
         </div>
     )
