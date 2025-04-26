@@ -1,12 +1,12 @@
 import "./ProductStyle.css"
 import {CartContext} from "./CreateContext.jsx";
 import {useContext} from "react";
-import {useState} from "react";
-import products from "./Products.jsx";
+
 const Product = ({price,id,title,image,category,showAdd= true}) => {
-    const {cart,setCart} = useContext(CartContext);
+    const {dispatch,totalPrice} = useContext(CartContext);
 
     const addToCart =() => {
+
         const productItem = {
             id,
             title,
@@ -14,10 +14,10 @@ const Product = ({price,id,title,image,category,showAdd= true}) => {
             image,
             category
         };
-        const checker = cart.some((item) => item.id === productItem.id);
-        if(!checker) {
-            setCart([...cart, productItem]);
-        }
+        dispatch({type:"ADD_ITEM",payload:productItem});
+        totalPrice.current += Number(productItem.price);
+
+
     }
 
     return (

@@ -1,26 +1,26 @@
 import dataFetch from "../datafetch.js";
-import {useState, useEffect} from "react";
+import {useState, useEffect,} from "react";
 import Product from "./Product.jsx";
 import "./ProductStyle.css";
 import { CartContext } from "./CreateContext.jsx";
 import {useContext} from "react";
-import product from "./Product.jsx";
 const Products = ()=> {
 
     const [products, setProducts] = useState([]);
     const [show, setShow] = useState(true);
-    const {cart,setCart} = useContext(CartContext);
+    const {cart,dispatch,totalPrice} = useContext(CartContext);
+
     useEffect(()=>{
         dataFetch().then(data => setProducts(data));
     },[])
-    console.log(products);
 
     const showHandler = () => {
         setShow(!show);
     }
-    const removeHandler = (key) => {
-       const updated =  cart.filter(item =>item.id !== key);
-       setCart(updated);
+    const removeHandler = (item) => {
+        dispatch({type:"REMOVE_ITEM",payload:item.id});
+        totalPrice.current = totalPrice.current -item.price ;
+
     }
     return (<div style={{width:"100vw",height:"100vh"}} >
         <div style={{
@@ -43,11 +43,19 @@ const Products = ()=> {
                     products.map((item) =>
                         (<Product {...item}></Product>)
                     )
-                ): cart.map((item) =>(
-                    <div key={item.id}>
-                        <Product {...item} showAdd={false}></Product>
-                        <button onClick={()=>removeHandler(item.id)}>removefromCart</button>
-                    </div>)
+                ):(
+                    cart.length > 0 ? (
+                        <>
+                            <h2>TotalPrice is:{totalPrice.current}</h2>
+                            {cart.map((item) =>(
+                                <div key={item.id}>
+                                    <Product {...item} showAdd={false}></Product>
+                                    <button onClick={()=>removeHandler(item)}>removefromCart</button>
+                                </div>))
+                            }
+                        </>):(
+                        <p>Cart is Empty</p>
+                             )
                 )
             }
         </div>
